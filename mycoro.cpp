@@ -28,7 +28,7 @@ int finished_cnt;
 /// API Reference
 void Init();
 void Add(VFUNC fn);
-bool yeild();
+bool yield();
 void StopAndCleanUp();
 void WaitAndCleanUp();
 
@@ -65,7 +65,7 @@ void StopAndCleanUp()
 void WaitAndCleanUp()
 {
     /// wait all fiber
-    while(yeild());
+    while(yield());
 
     ConvertFiberToThread();
 }
@@ -83,7 +83,7 @@ void CALLBACK Wrapper(void* ptr)
     dprintf("Task Finished. In %d\n",cur_id);
     ppack->pinfo->status=2;
     delete ppack;
-    yeild();
+    yield();
 }
 
 void Add(VFUNC fn)
@@ -99,7 +99,7 @@ void Add(VFUNC fn)
     vec.push_back(m);
 }
 
-bool yeild()
+bool yield()
 {
     dprintf("call. In %d\n",cur_id);
 
@@ -178,7 +178,7 @@ bool yeild()
     }
     else
     {
-        dprintf("skip yeild\n");
+        dprintf("skip yield\n");
 
         return false;
     }
@@ -191,8 +191,8 @@ void workproc()
     for(int i=0;i<10;i++)
     {
         cout<<"In WorkProc "<<i<<endl;
-        bool ret=yeild();
-        cout<<"In WorkProc "<<i<<" Yeild Return "<<ret<<endl;
+        bool ret=yield();
+        cout<<"In WorkProc "<<i<<" yield Return "<<ret<<endl;
     }
 }
 
@@ -202,7 +202,7 @@ void cpu_heavy_proc()
     {
         cout<<"In CPU Heavy Proc "<<i<<endl;
         for(int c=0;c<1e9+7;++c);
-        yeild();
+        yield();
     }
 }
 
@@ -215,8 +215,8 @@ int main()
     for(int i=0;i<5;i++)
     {
         cout<<"In Main "<<i<<endl;
-        bool ret=yeild();
-        cout<<"In Main "<<i<<" Yeild Return "<<ret<<endl;
+        bool ret=yield();
+        cout<<"In Main "<<i<<" yield Return "<<ret<<endl;
     }
 
     WaitAndCleanUp();
