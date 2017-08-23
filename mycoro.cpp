@@ -117,7 +117,7 @@ bool yeild()
                 int sz=vec.size();
                 for(int i=0;i<sz;i++)
                 {
-                    if(vec[i]->status==2)
+                    if(vec[i]&&vec[i]->status==2)
                     {
                         dprintf("Deleting Fiber %d\n",i);
 
@@ -163,6 +163,7 @@ bool yeild()
         {
             /// Cannot switch
             dprintf("unable to switch. In %d\n",cur_id);
+            vec[cur_id]->status=0;
             return false;
         }
 
@@ -195,10 +196,21 @@ void workproc()
     }
 }
 
+void cpu_heavy_proc()
+{
+    for(int i=0;i<5;i++)
+    {
+        cout<<"In CPU Heavy Proc "<<i<<endl;
+        for(int c=0;c<1e9+7;++c);
+        yeild();
+    }
+}
+
 int main()
 {
     Init();
     Add(workproc);
+    Add(cpu_heavy_proc);
 
     for(int i=0;i<5;i++)
     {
