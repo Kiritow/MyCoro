@@ -1,4 +1,7 @@
+/// Mark windows version Win8.1
+#define _WIN32_WINNT 0x0603
 #include <windows.h>
+
 #include <cstdio>
 #include <vector>
 #include <iostream>
@@ -56,7 +59,7 @@ void StopAndCleanUp()
     {
         DeleteFiber(vec[i]->fiber);
         delete vec[i];
-        vec[i]=nullptr;
+        vec[i]=NULL;
     }
 
     ConvertFiberToThread();
@@ -101,7 +104,7 @@ void Add(VFUNC fn)
 
 bool yield()
 {
-    dprintf("call. In %d\n",cur_id);
+    dprintf("call. cur_id: %d CurrentFiber: %p\n",cur_id,GetCurrentFiber());
 
     if(vec.size()>1)
     {
@@ -123,7 +126,7 @@ bool yield()
 
                         DeleteFiber(vec[i]->fiber);
                         delete vec[i];
-                        vec[i]=nullptr;
+                        vec[i]=NULL;
                         --finished_cnt;
                     }
                 }
@@ -164,14 +167,16 @@ bool yield()
             /// Cannot switch
             dprintf("unable to switch. In %d\n",cur_id);
             vec[cur_id]->status=0;
+
             return false;
         }
 
-        dprintf("switch %d to %d\n",cur_id,nextid);
+        dprintf("switching cur_id: %d to %d, fiber: %p to %p\n",cur_id,nextid,GetCurrentFiber(),vec[nextid]->fiber);
 
         cur_id=nextid;
 
         vec[cur_id]->status=0;
+
         SwitchToFiber(vec[cur_id]->fiber);
 
         return true;
@@ -179,7 +184,6 @@ bool yield()
     else
     {
         dprintf("skip yield\n");
-
         return false;
     }
 }
