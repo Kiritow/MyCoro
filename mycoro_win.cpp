@@ -1,3 +1,5 @@
+#ifdef _WIN32 /// Windows
+
 #include "mycoro.h"
 #include <set>
 #include <windows.h>
@@ -224,3 +226,5 @@ coro_manager::~coro_manager()
     if(pimpl)
         delete pimpl;
 }
+
+#endif /// End of Windows System definition.
